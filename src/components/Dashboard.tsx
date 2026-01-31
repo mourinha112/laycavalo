@@ -222,7 +222,7 @@ export default function Dashboard({ user }: { user: User }) {
       setNovaEntrada({
         tipo: 'cavalo',
         odd_original: 0,
-        stake_ganho: meta.stake_por_entrada || 5,
+        stake_ganho: calcularStakePorEntrada(),
         observacao: '',
       })
       setShowAddEntry(false)
@@ -454,7 +454,18 @@ export default function Dashboard({ user }: { user: User }) {
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-semibold">Nova Entrada LAY</h2>
               <button
-                onClick={() => setShowAddEntry(!showAddEntry)}
+                onClick={() => {
+                  if (!showAddEntry) {
+                    // Ao abrir, inicializa com a stake calculada
+                    setNovaEntrada({
+                      tipo: 'cavalo',
+                      odd_original: 0,
+                      stake_ganho: calcularStakePorEntrada(),
+                      observacao: '',
+                    })
+                  }
+                  setShowAddEntry(!showAddEntry)
+                }}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
                   showAddEntry 
                     ? 'bg-gray-600 hover:bg-gray-700' 
