@@ -1,21 +1,29 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { supabase } from '@/lib/supabase'
 import { User } from '@supabase/supabase-js'
+import { supabase } from '@/lib/supabase'
 import Login from '@/components/Login'
 import Dashboard from '@/components/Dashboard'
 
 export default function Home() {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    setMounted(true)
+    
     // Verificar sessão atual
     const getSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
-      setUser(session?.user ?? null)
-      setLoading(false)
+      try {
+        const { data: { session } } = await supabase.auth.getSession()
+        setUser(session?.user ?? null)
+      } catch (error) {
+        console.error('Erro ao verificar sessão:', error)
+      } finally {
+        setLoading(false)
+      }
     }
 
     getSession()
